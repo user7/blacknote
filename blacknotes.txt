@@ -1,0 +1,157 @@
+plan
+    build data model1
+       
+        * KeyTable
+            Key
+ 
+ globals:
+
+        все типы данных содержатся в таблице
+        singleton, created compile time
+            * check on app start (check compile time)
+        HashMap<uuid, DataType>
+            DataType
+                uuid
+                load(uuid, LoadingContext)
+                    LoadingContext
+                        can read primitives maybe
+
+        loadQueue: sorted list of items
+            on state update: mark dirty, upon load next reorder
+            ability to remove item
+
+        ObjectId = UUID
+
+        NodeHolder
+            id: ObjectId
+            data: NBase 
+            - loading via weak ref -
+
+        NStub ->
+            error: String?
+            startTime: TimeStamp?
+            
+            isSleeping()
+            isLoading()
+            isError()
+
+        NFolder
+            name: String
+            items: List<NodeHolder>
+
+        NNote
+            style: String
+            title: String 
+            comment: String 
+
+        NFile
+            style: String
+            name: String
+            blob: DBlob
+
+black book = tree structured notes
+    data model:
+        database:
+            .content (an object, a list of notes?)
+            .settings (list of key-values)
+            .styles
+                normal
+                important
+                critical
+
+        object has type        
+        object can reference other objects
+        object types:
+
+            object :
+                | file
+
+            folder
+                .info : file_info
+                .data : list file
+
+            notes
+                .info : file_info
+                .data : list note
+                
+            attachment
+                .info : file_info
+                .data : file_source
+                .mime : string (auto detected on attach, can be edited) 
+
+            file_attrs:
+                .title : string
+                .date : created
+                x .encryption_key
+                x .location
+                x .style
+
+            note:
+                .string
+                x .style
+
+            text:
+                x .data: list text_elem
+                .data: string -- for now
+                
+            x text_elem:
+                x .data: list text_elem
+
+data:
+    Nodes N-Classes, live in tree
+    NBase
+        addr: DAddr
+        size: Int
+
+    NFolder
+        name: DText?
+        style: String
+        data: List<NBase>?
+
+    NNote
+        title: String
+        style: String
+        date: DDate
+        
+    NFile
+        name: String
+        data: ByteArray
+        extra: Attrs
+
+    NStyle
+        colorBg: DColor
+        colorFg: DColor
+        colorRg: DColor
+    
+    > all data fields with variable size should be like streams
+    DBlob = ByteArray
+    DColor = String
+            
+  ! NNoteList - no list of notes - use folder
+  ! NCard - card with fields, with customizable sets of fields
+
+    Data, D-Classes, for attributes
+    
+    R - runtime data, only used in unpacked form
+    RDataAddress
+        storage: RDataSection
+        offset: Int
+        size: Int
+    
+    RDataSection
+        storage: RDataStorage
+        offset: Int
+        
+    RDataStorage:
+        uuid: UUID
+        file: File
+
+    NKeys:
+        map name (key digest) -> unpacked key-values
+
+    RKey:
+
+misc
+    autochange folder icon to list of notes
+    notes filter
+    tag filter
