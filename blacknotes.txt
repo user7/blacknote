@@ -24,9 +24,9 @@ plan
         KeyId = Int // key hash or something
 
         NodeHolder
-            id: ObjectId
-            * keyId: KeyId
+            objectId: ObjectId
             data: NBase 
+            keyId: KeyId
             - loading via weak ref -
 
         NStub ->
