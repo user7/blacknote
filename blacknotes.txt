@@ -21,9 +21,11 @@ plan
             ability to remove item
 
         ObjectId = UUID
+        KeyId = Int // key hash or something
 
         NodeHolder
             id: ObjectId
+            * keyId: KeyId
             data: NBase 
             - loading via weak ref -
 
