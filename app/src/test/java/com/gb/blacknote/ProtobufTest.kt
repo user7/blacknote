@@ -1,5 +1,6 @@
 package com.gb.blacknote
 
+import com.gb.blacknote.model.SKey
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
@@ -100,6 +101,11 @@ class ProtobufTest {
 
         // broken schema works, need to detect compile time
         roundtrip(TestOverlap(1, 2), TestOverlap(null, 2))
+    }
+
+    @Test
+    fun roundrtipSKey() {
+        roundtrip(SKey(123, 3232, 12321, byteArrayOf(1, 0x23, 3, 4, 5)))
     }
 
     inline fun <reified T> readHexTest(hex: String, expected: T) {
