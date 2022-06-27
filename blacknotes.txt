@@ -1,8 +1,40 @@
 plan
-    build data model1
-       
-        * KeyTable
-            Key
+    build data model
+
+        SKey
+            passSalt: Long?
+            passIters: Long?
+            passHash: Long?
+            bytes: ByteArray?
+
+        * SDatabaseSettings
+
+        SDatabase
+            keys: ArrayList<SKey>
+            settings: SDatabaseSettings
+
+        * MSettings
+
+        MDatabase
+            sdatabase: SDatabase?
+            keyTable: Map<KeyId, MKey>
+            root: NodeHolder
+            * settings: MSettings
+
+        MKey
+            secretKey: Skey
+
+        NodeId
+            uuid
+
+        NodeHolder
+            addr: SAddr
+            id: NodeId
+
+        NBase is either
+            NFolder
+            NNote
+            NFile
  
  globals:
 
