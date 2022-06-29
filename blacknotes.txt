@@ -1,40 +1,93 @@
 plan
     build data model
 
+    1. Storage
+
+        all absolute offsets are Long, 8 bytes when fixed
+        all magic are Long 8 bytes
+        salt is also 8 byte
+
+        // file structure:
+        // chunk chunk chunk where each is:
+        // d -> data...
+        // h -> SDataBase
+        // FixedHeader
+        //      h : offset 8b
+        //      d : offset 8b
+        //      fileFormatMagic: 8b
+
+        // Enum constants
+        // StorageMagic
+        // * StorageMagicCurrentlyWriting
+        // * ShreddedMagic
+
         SKey
             passSalt: Long?
             passIters: Long?
             passHash: Long?
             bytes: ByteArray?
 
-        * SDatabaseSettings
-
         SDatabase
             keys: ArrayList<SKey>
-            settings: SDatabaseSettings
+            root: SRef
+            * timestamps: STimeStamps
+        
+        SRef
+            offset: Long
+            salt: Long <fixed>
+            keyId: Long?
 
-        * MSettings
+        // SEncryptedChunkHeader
+        //    size: Long 8 bytes
+        //    crc32: Int
+        // not really a structure, 12 bytes read from decrypted 1st block
 
-        MDatabase
-            sdatabase: SDatabase?
-            keyTable: Map<KeyId, MKey>
-            root: NodeHolder
-            * settings: MSettings
+        // encrypted chunk is read via
+        SNode
+            * uuid: ByteArray -- each item has uuid
+            folder: SFolder?
+            note: SNote?
+            * file: SFile?
+
+        SFolder
+            name: String
+            items: ArrayList<SRef>
+
+        SNote
+            title: String
+
+        * SFile
+            name: String
+            body: ByteArray
+
+    2. Model
 
         MKey
             secretKey: Skey
 
-        NodeId
-            uuid
+        MNode is either:
+            MNodeFolder
+            MNodeNote
+            MNodeFile
 
-        NodeHolder
-            addr: SAddr
-            id: NodeId
+        MNodeLoading
+            ref: Ref
+
+        MNodeFolder
+
+        MNodeNote
+
+        MDatabase
+            sdatabase: SDatabase?
+            activeKeys: Map<KeyId, SecretKey>
+            root: MNode
+            * timestamps: MTimestamps
+            * settings: MSettings
+
+        NodeId
+            offset: Long
 
         NBase is either
-            NFolder
-            NNote
-            NFile
  
  globals:
 
@@ -82,54 +135,6 @@ plan
             style: String
             name: String
             blob: DBlob
-
-black book = tree structured notes
-    data model:
-        database:
-            .content (an object, a list of notes?)
-            .settings (list of key-values)
-            .styles
-                normal
-                important
-                critical
-
-        object has type        
-        object can reference other objects
-        object types:
-
-            object :
-                | file
-
-            folder
-                .info : file_info
-                .data : list file
-
-            notes
-                .info : file_info
-                .data : list note
-                
-            attachment
-                .info : file_info
-                .data : file_source
-                .mime : string (auto detected on attach, can be edited) 
-
-            file_attrs:
-                .title : string
-                .date : created
-                x .encryption_key
-                x .location
-                x .style
-
-            note:
-                .string
-                x .style
-
-            text:
-                x .data: list text_elem
-                .data: string -- for now
-                
-            x text_elem:
-                x .data: list text_elem
 
 data:
     Nodes N-Classes, live in tree
@@ -189,7 +194,19 @@ misc
     autochange folder icon to list of notes
     notes filter
     tag filter
+    enumerate inner classes, run test for each of them
+        - use swith sealed class to test each subclass is present
+    enumerate enum members to check they don't collide
+    x read packed element from byte array not protobuf full class
 
+    what is protobuf strategy
+    uuid stuff
+        UUID uuid = UUID.randomUUID();
+        byte[] uuidBytes = new byte[16];
+        ByteBuffer.wrap(uuidBytes)
+        .order(ByteOrder.BIG_ENDIAN)
+        .putLong(uuid.getMostSignificantBits())
+        .putLong(uuid.getLeastSignificantBits());
 
 Иерархические заметки с мастер паролями.
 

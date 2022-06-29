@@ -1,17 +1,18 @@
 package com.gb.blacknote
 
 import com.gb.blacknote.model.SKey
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
 import kotlinx.serialization.protobuf.ProtoNumber
-import kotlinx.serialization.protobuf.schema.ProtoBufSchemaGenerator
 import org.junit.Test
 
 import org.junit.Assert.*
 import java.lang.Exception
 
+@ExperimentalSerializationApi
 @Serializable
 data class TestSI(
     @ProtoNumber(1)
@@ -21,6 +22,7 @@ data class TestSI(
     val i: Int = 11,
 )
 
+@ExperimentalSerializationApi
 @Serializable
 data class TestSqIq(
     @ProtoNumber(1)
@@ -30,6 +32,7 @@ data class TestSqIq(
     val i: Int?
 )
 
+@ExperimentalSerializationApi
 @Serializable
 data class TestOverlap(
     @ProtoNumber(1)
@@ -39,6 +42,7 @@ data class TestOverlap(
     val j: Int?,
 )
 
+@ExperimentalSerializationApi
 @Serializable
 data class TestComposite(
     @ProtoNumber(1)
@@ -48,6 +52,31 @@ data class TestComposite(
     val b: TestSI,
 )
 
+@ExperimentalSerializationApi
+class TestStorage {
+    @Serializable
+    data class TestSI(
+        @ProtoNumber(1)
+        val s: String = "qq",
+
+        @ProtoNumber(2)
+        val i: Int = 11,
+    )
+}
+
+@ExperimentalSerializationApi
+@Serializable
+class TestUUID(
+    @ProtoNumber(1)
+    var uuid: ByteArray,
+)
+
+sealed class SealedBase {
+    class A(val a: Int) : SealedBase() {}
+    class B(val b: Int) : SealedBase() {}
+}
+
+@ExperimentalSerializationApi
 class ProtobufTest {
     @Test
     fun testRequired() {
@@ -104,6 +133,11 @@ class ProtobufTest {
     }
 
     @Test
+    fun testNestedRoundtrip() {
+        roundtrip(TestStorage.TestSI("qwe", 12))
+    }
+
+    @Test
     fun roundrtipSKey() {
         roundtrip(SKey(123, 3232, 12321, byteArrayOf(1, 0x23, 3, 4, 5)))
     }
@@ -143,4 +177,15 @@ class ProtobufTest {
     fun printBytes(bytes: ByteArray) {
         println(hexBytes(bytes))
     }
+
+//    @Test
+//    fun testEnumSealed() {
+//        val sub = SealedBase::class.sealedSubclasses
+//        for (s in sub) {
+//            println("subclass: $s")
+//        }
+//    }
+//
+// works after adding to gradle:
+//  implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }

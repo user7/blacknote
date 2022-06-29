@@ -14,7 +14,7 @@ import kotlinx.serialization.protobuf.ProtoType
 
 @ExperimentalSerializationApi
 @Serializable
-data class SKey constructor(
+class SKey constructor(
     @ProtoNumber(1)
     @ProtoType(ProtoIntegerType.FIXED)
     val passHardeningSalt: Long,
@@ -28,26 +28,4 @@ data class SKey constructor(
 
     @ProtoNumber(4)
     val keyBytes: ByteArray,
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as SKey
-
-        if (passHardeningSalt != other.passHardeningSalt) return false
-        if (passHardeningIterations != other.passHardeningIterations) return false
-        if (keyHash != other.keyHash) return false
-        if (!keyBytes.contentEquals(other.keyBytes)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = passHardeningSalt.hashCode()
-        result = 31 * result + passHardeningIterations
-        result = 31 * result + keyHash.hashCode()
-        result = 31 * result + keyBytes.contentHashCode()
-        return result
-    }
-}
+)
