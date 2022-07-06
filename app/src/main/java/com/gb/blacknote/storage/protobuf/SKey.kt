@@ -1,4 +1,4 @@
-package com.gb.blacknote.model
+package com.gb.blacknote.storage.protobuf
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -14,7 +14,7 @@ import kotlinx.serialization.protobuf.ProtoType
 
 @ExperimentalSerializationApi
 @Serializable
-class SKey constructor(
+class SKey(
     @ProtoNumber(1)
     @ProtoType(ProtoIntegerType.FIXED)
     val passHardeningSalt: Long,
@@ -24,7 +24,7 @@ class SKey constructor(
 
     @ProtoNumber(3)
     @ProtoType(ProtoIntegerType.FIXED)
-    val keyHash: Long,
+    val keyId: Long,
 
     @ProtoNumber(4)
     val keyBytes: ByteArray,

@@ -1,6 +1,6 @@
 package com.gb.blacknote
 
-import com.gb.blacknote.model.SKey
+import com.gb.blacknote.storage.protobuf.SKey
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromByteArray
