@@ -178,14 +178,5 @@ class ProtobufTest {
         println(hexBytes(bytes))
     }
 
-//    @Test
-//    fun testEnumSealed() {
-//        val sub = SealedBase::class.sealedSubclasses
-//        for (s in sub) {
-//            println("subclass: $s")
-//        }
-//    }
-//
-// works after adding to gradle:
-//  implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
 }

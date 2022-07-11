@@ -10,7 +10,7 @@ import java.util.*
 @Dao
 interface HeaderDao {
     @Query(value = "SELECT * FROM headers ORDER BY timestamp ASC LIMIT 1")
-    fun getHeader(limit: Int): List<HeaderEntity>
+    fun getHeader(): List<HeaderEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun replaceHeader(headerEntity: HeaderEntity)

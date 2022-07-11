@@ -5,8 +5,9 @@
     android:layout_height="match_parent">
 
     <ImageButton
-        android:layout_width="@dimen/menubutton_h"
-        android:layout_height="@dimen/menubutton_w"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:contentDescription="@string/app_name"
         android:src="@drawable/ic_menubutton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

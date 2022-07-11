@@ -6,11 +6,11 @@ import java.util.UUID
 
 interface ChunkStorage {
 
-    fun loadHeader(): SDBHeader
+    suspend fun loadHeader(): SDBHeader
 
-    fun saveHeader(data: SDBHeader)
+    suspend fun saveHeader(data: SDBHeader)
 
-    fun loadChunk(id: UUID, splinterKey: SplinterKey): SVariantNode
+    suspend fun loadChunk(id: UUID, splinterKey: SplinterKey): SVariantNode
 
-    fun saveChunk(id: UUID, splinterKey: SplinterKey, data: SVariantNode)
+    suspend fun saveChunk(id: UUID, splinterKey: SplinterKey, data: SVariantNode)
 }
