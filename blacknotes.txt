@@ -1,4 +1,13 @@
 plan
+    add koin
+    add viewModel
+    inject viewModel into mainFragment
+    add idatabase
+    create fakedatabase class
+        load = generates new
+        save = does nothing
+    inject idatabase into viewmodel
+
     implement room thing
         dao classes, at least two of them
         some test requests?
