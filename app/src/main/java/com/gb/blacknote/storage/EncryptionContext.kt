@@ -2,7 +2,7 @@ package com.gb.blacknote.storage
 
 import javax.crypto.SecretKey
 
-data class SplinterKey(
+data class EncryptionContext(
     val splinter: Long,
     val key: SecretKey,
 )

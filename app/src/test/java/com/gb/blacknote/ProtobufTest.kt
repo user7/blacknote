@@ -177,6 +177,4 @@ class ProtobufTest {
     fun printBytes(bytes: ByteArray) {
         println(hexBytes(bytes))
     }
-
-
 }

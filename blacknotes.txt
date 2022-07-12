@@ -1,6 +1,7 @@
 plan
-    add koin
+    + add koin
     add viewModel
+        add some kind of list adapter
     inject viewModel into mainFragment
     add idatabase
     create fakedatabase class
@@ -222,3 +223,11 @@ navigation component
     //
     // works after adding to gradle:
     //  implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"        
+
+
+project structure, where to put viewmodel
+database observer weak ref
+
+room
+    class SqliteChunkStorage(context: Context) {
+        private val db = Room.databaseBuilder(context, AppDatabase::class.java, "main.db").build()

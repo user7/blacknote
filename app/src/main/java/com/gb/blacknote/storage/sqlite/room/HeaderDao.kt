@@ -9,8 +9,8 @@ import java.util.*
 
 @Dao
 interface HeaderDao {
-    @Query(value = "SELECT * FROM headers ORDER BY timestamp ASC LIMIT 1")
-    fun getHeader(): List<HeaderEntity>
+    @Query(value = "SELECT * FROM headers ORDER BY timestamp DESC LIMIT 1")
+    fun getLatestHeader(): HeaderEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun replaceHeader(headerEntity: HeaderEntity)
