@@ -1,6 +1,7 @@
-package com.gb.blacknote.model
+package com.gb.blacknote.storage
 
-import com.gb.blacknote.storage.ChunkStorage
+import com.gb.blacknote.model.MDBHeader
+import com.gb.blacknote.model.MNode
 import java.util.*
 import javax.crypto.SecretKey
 
@@ -10,7 +11,7 @@ interface IDataBase {
 
     fun save()
 
-    fun getHeader()
+    fun getHeader() : MDBHeader?
 
     fun getItem(id: UUID) : MNode
 
