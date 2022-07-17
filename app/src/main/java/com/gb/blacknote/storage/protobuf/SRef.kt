@@ -14,5 +14,5 @@ class SRef(
     val keyId: Long,
 
     @ProtoNumber(3)
-    val splinter: Long,
+    val head: ByteArray,
 )
