@@ -1,18 +1,15 @@
 package com.gb.blacknote.model.db
 
-import com.gb.blacknote.storage.protobuf.SDBHeader
-import java.util.*
-import javax.crypto.SecretKey
+import java.time.Instant
+import java.util.UUID
 
 class DBHeader(
-    lockedKeys: List<LockedKey>
+    val id: UUID,
+    val timestamp: Instant,
+    val lockedKeys: List<KeyLocked>,
+    rootNodeRef: DBChunkRef,
 )
 {
-    val storedKeys: List<EncryptedKey>
-    val activeKeys: Map<UUID, ActiveKey> = mapOf()
-    val root: DBNode = DBNodePending()
-
-    init {
-        TODO("decrypt keys")
-    }
+    val unlockedKeys: Map<UUID, KeyUnlocked> = mapOf()
+    var root: DBNode = DBNodePending(rootNodeRef)
 }

@@ -1,4 +1,4 @@
-package com.gb.blacknote.storage.protobuf
+package com.gb.blacknote.db.protobuf
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -16,16 +16,11 @@ import kotlinx.serialization.protobuf.ProtoType
 @Serializable
 class SKey(
     @ProtoNumber(1)
-    @ProtoType(ProtoIntegerType.FIXED)
-    val passHardeningSalt: Long,
+    val passSalt: ByteArray,
 
     @ProtoNumber(2)
-    val passHardeningIterations: Int,
+    val keyId: ByteArray,
 
     @ProtoNumber(3)
-    @ProtoType(ProtoIntegerType.FIXED)
-    val keyId: Long,
-
-    @ProtoNumber(4)
     val keyBytes: ByteArray,
 )

@@ -1,4 +1,4 @@
-package com.gb.blacknote.storage.protobuf
+package com.gb.blacknote.db.protobuf
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -9,7 +9,7 @@ import kotlinx.serialization.protobuf.ProtoNumber
 
 @ExperimentalSerializationApi
 @Serializable
-class SVariantNode(
+class SVariant(
     @ProtoNumber(1)
     val uuid: SUUID,
 

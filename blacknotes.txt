@@ -1,7 +1,7 @@
 plan
     + add koin
-    add viewModel
-        add some kind of list adapter
+    + add viewModel
+        add some kind of list adapter, empty
     inject viewModel into mainFragment
     add idatabase
     create fakedatabase class
@@ -231,3 +231,40 @@ database observer weak ref
 room
     class SqliteChunkStorage(context: Context) {
         private val db = Room.databaseBuilder(context, AppDatabase::class.java, "main.db").build()
+        
+keyID:
+    UUID length 128 bit = 16 byte
+        size
+    decrypted key:
+        sha256 key control sum
+        key
+    
+    notifyAll
+        // TODO weak ref, or proper
+
+timestamp.toEpochMilli()
+Instant.ofEpochMilli()
+
+check hashset example .hashCode
+
+crypto
+    val plaintext: ByteArray = ...
+    val keygen = KeyGenerator.getInstance("AES")
+    keygen.init(256)
+    val key: SecretKey = keygen.generateKey()
+    val cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
+    cipher.init(Cipher.ENCRYPT_MODE, key)
+    val ciphertext: ByteArray = cipher.doFinal(plaintext)
+    val iv: ByteArray = cipher.iv
+    
+разобраться в SerializationStrategy / DeserializationStrategy
+    third party class through extending KSerializer
+        \ https://proandroiddev.com/custom-kotlinx-serializers-cd148e72d712
+        ? can it be used with protobuf
+        ? what is SerialDescriptor
+        
+    ProtoBuf.encodeToByteArray(strategy: SerializationStrategy, obj: T)
+        SerializationStrategy works with Encoder
+    
+OptIn на весь файл
+    @file:OptIn(ExperimentalSerializationApi::class)

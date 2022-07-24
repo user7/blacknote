@@ -3,7 +3,7 @@ package com.gb.blacknote.model.db
 import java.util.*
 
 class DBChunkRef(
-    chunkId: UUID,
-    keyId: UUID,
-    header: ByteArray,
+    val chunkId: UUID,
+    val keyId: UUID,
+    val header: ByteArray,
 )

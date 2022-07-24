@@ -1,4 +1,4 @@
-package com.gb.blacknote.storage.protobuf
+package com.gb.blacknote.db.protobuf
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -6,10 +6,13 @@ import kotlinx.serialization.protobuf.ProtoNumber
 
 @ExperimentalSerializationApi
 @Serializable
-class SFolder(
+class SChunkHeader(
     @ProtoNumber(1)
-    val name: String = "",
+    val salt: ByteArray,
 
     @ProtoNumber(2)
-    val items: List<SRef> = listOf(),
+    val dataLength: Int,
+
+    @ProtoNumber(3)
+    val dataHash: ByteArray,
 )

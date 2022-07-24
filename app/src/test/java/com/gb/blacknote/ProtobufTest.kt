@@ -1,6 +1,6 @@
+@file:OptIn(ExperimentalSerializationApi::class)
 package com.gb.blacknote
 
-import com.gb.blacknote.storage.protobuf.SKey
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromByteArray
@@ -12,7 +12,6 @@ import org.junit.Test
 import org.junit.Assert.*
 import java.lang.Exception
 
-@ExperimentalSerializationApi
 @Serializable
 data class TestSI(
     @ProtoNumber(1)
@@ -22,7 +21,6 @@ data class TestSI(
     val i: Int = 11,
 )
 
-@ExperimentalSerializationApi
 @Serializable
 data class TestSqIq(
     @ProtoNumber(1)
@@ -32,7 +30,6 @@ data class TestSqIq(
     val i: Int?
 )
 
-@ExperimentalSerializationApi
 @Serializable
 data class TestOverlap(
     @ProtoNumber(1)
@@ -42,7 +39,6 @@ data class TestOverlap(
     val j: Int?,
 )
 
-@ExperimentalSerializationApi
 @Serializable
 data class TestComposite(
     @ProtoNumber(1)
@@ -52,7 +48,6 @@ data class TestComposite(
     val b: TestSI,
 )
 
-@ExperimentalSerializationApi
 class TestStorage {
     @Serializable
     data class TestSI(
@@ -64,19 +59,12 @@ class TestStorage {
     )
 }
 
-@ExperimentalSerializationApi
 @Serializable
 class TestUUID(
     @ProtoNumber(1)
-    var uuid: ByteArray,
+    var bytes: ByteArray,
 )
 
-sealed class SealedBase {
-    class A(val a: Int) : SealedBase() {}
-    class B(val b: Int) : SealedBase() {}
-}
-
-@ExperimentalSerializationApi
 class ProtobufTest {
     @Test
     fun testRequired() {
@@ -138,26 +126,49 @@ class ProtobufTest {
     }
 
     @Test
-    fun roundrtipSKey() {
-        roundtrip(SKey(123, 3232, 12321, byteArrayOf(1, 0x23, 3, 4, 5)))
+    fun testByteArrayComparison() {
+        assertNotEquals(bin("11"), bin("11"))
     }
 
-    inline fun <reified T> readHexTest(hex: String, expected: T) {
-        val bytes = hex.replace(" ", "").chunked(2)
+    @Test
+    fun testByteArrayContentsComparison() {
+        assertTrue(bin("11").contentEquals(bin("11")))
+    }
+
+    @Test
+    fun testIntArrayComparison() {
+        assertEquals(arrayListOf(9), arrayListOf(9))
+    }
+
+    @Test
+    fun testUUIDByteArray() {
+        val uuid = TestUUID(bin("11 22 33 44 55 66 77 88 99"))
+        val bytes = ProtoBuf.encodeToByteArray(uuid)
+        val uuid2 = ProtoBuf.decodeFromByteArray<TestUUID>(bytes)
+        assertTrue(uuid2.bytes.contentEquals(uuid.bytes))
+    }
+
+// === helpers
+
+    private fun bin(hex: String): ByteArray =
+        hex.replace(" ", "").chunked(2)
             .map { it.toInt(16).toByte() }.toByteArray()
+
+    private inline fun <reified T> readHexTest(hex: String, expected: T) {
+        val bytes = bin(hex)
         try {
             val got = ProtoBuf.decodeFromByteArray<T>(bytes)
             assertEquals(
-                "reading ${hexBytes(bytes)} failed, expected '$expected', got '$got'",
+                "reading ${prettyHex(bytes)} failed, expected '$expected', got '$got'",
                 expected,
                 got
             )
         } catch (e: Exception) {
-            fail("exception reading ${hexBytes(bytes)}: $e")
+            fail("exception reading ${prettyHex(bytes)}: $e")
         }
     }
 
-    fun hexBytes(bytes: ByteArray): String {
+    private fun prettyHex(bytes: ByteArray): String {
         val sb = StringBuilder()
         val regex = "\\p{Punct}|\\p{Alnum}| ".toRegex()
         for (b in bytes) {
@@ -175,6 +186,6 @@ class ProtobufTest {
     }
 
     fun printBytes(bytes: ByteArray) {
-        println(hexBytes(bytes))
+        println(prettyHex(bytes))
     }
 }

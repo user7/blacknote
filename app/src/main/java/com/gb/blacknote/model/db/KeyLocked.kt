@@ -2,8 +2,8 @@ package com.gb.blacknote.model.db
 
 import java.util.*
 
-class LockedKey(
+class KeyLocked(
     val keyId: UUID,
-    val keyBytes: ByteArray,
+    val encryptedKey: ByteArray,
     val derivationSalt: ByteArray,
 )

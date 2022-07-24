@@ -1,4 +1,4 @@
-package com.gb.blacknote.storage.protobuf
+package com.gb.blacknote.db.protobuf
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -6,10 +6,10 @@ import kotlinx.serialization.protobuf.ProtoNumber
 
 @ExperimentalSerializationApi
 @Serializable
-class SNote(
+class SFile(
     @ProtoNumber(1)
-    val title: String = "",
+    val name: String = "",
 
     @ProtoNumber(2)
-    val comment: String? = null,
+    val body: ByteArray,
 )
