@@ -6,6 +6,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -58,8 +59,7 @@ class CryptoTests {
             iv = iv,
         )
         val decoded = chunkDecode(encoded, key, iv)
-
-        // deep compare data vs decoded
+        assertThat(decoded).isEqualToComparingFieldByFieldRecursively(obj)
     }
 
     private fun chunkEncode(
