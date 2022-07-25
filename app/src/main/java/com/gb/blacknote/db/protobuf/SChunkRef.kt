@@ -14,5 +14,5 @@ class SChunkRef(
     val keyId: ByteArray, // UUID
 
     @ProtoNumber(3)
-    val header: ByteArray,
+    val iv: ByteArray,
 )

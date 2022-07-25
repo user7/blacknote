@@ -11,6 +11,7 @@ import org.junit.Test
 
 import org.junit.Assert.*
 import java.lang.Exception
+import kotlin.test.assertContentEquals
 
 @Serializable
 data class TestSI(
@@ -66,6 +67,7 @@ class TestUUID(
 )
 
 class ProtobufTest {
+
     @Test
     fun testRequired() {
         roundtrip(TestSI("hi!", 65))
@@ -96,14 +98,14 @@ class ProtobufTest {
         readHexTest("0A 03 71 77 65 10 61 0A 03 71 77 65 10 63", TestSqIq("qwe", 99))
     }
 
-    inline fun <reified T> roundtrip(data: T) {
+    private inline fun <reified T> roundtrip(data: T) {
         val r = ProtoBuf.encodeToByteArray(data)
         printBytes(r)
         val expected = ProtoBuf.decodeFromByteArray<T>(r)
         assertEquals(expected, data)
     }
 
-    inline fun <reified T, reified U> roundtrip(input: T, expected: U) {
+    private inline fun <reified T, reified U> roundtrip(input: T, expected: U) {
         val r = ProtoBuf.encodeToByteArray(input)
         printBytes(r)
         val got = ProtoBuf.decodeFromByteArray<U>(r)
@@ -132,7 +134,7 @@ class ProtobufTest {
 
     @Test
     fun testByteArrayContentsComparison() {
-        assertTrue(bin("11").contentEquals(bin("11")))
+        assertContentEquals(bin("11"), bin("11"))
     }
 
     @Test

@@ -8,11 +8,8 @@ import kotlinx.serialization.protobuf.ProtoNumber
 @Serializable
 class SChunkHeader(
     @ProtoNumber(1)
-    val salt: ByteArray,
-
-    @ProtoNumber(2)
     val dataLength: Int,
 
-    @ProtoNumber(3)
+    @ProtoNumber(2)
     val dataHash: ByteArray,
 )

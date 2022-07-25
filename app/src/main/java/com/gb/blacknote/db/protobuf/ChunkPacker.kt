@@ -17,22 +17,23 @@ class ChunkPacker {
         timestamp: Instant,
     ): DBHeader {
         val header = ProtoBuf.decodeFromByteArray<SDBHeader>(bytes)
-        return DBHeader(
-            id = id,
-            timestamp = timestamp,
-            lockedKeys = header.keys.map {
-                KeyLocked(
-                    keyId = byteArrayToUUID(it.keyId),
-                    encryptedKey = it.keyBytes,
-                    derivationSalt = it.passSalt,
-                )
-            },
-            rootNodeRef = DBChunkRef(
-                keyId = byteArrayToUUID(header.rootNode.keyId),
-                chunkId = byteArrayToUUID(header.rootNode.chunkId),
-                header = header.rootNode.header,
-            )
-        )
+        TODO()
+//        return DBHeader(
+//            id = id,
+//            timestamp = timestamp,
+//            lockedKeys = header.keys.map {
+//                KeyLocked(
+//                    keyId = byteArrayToUUID(it.keyId),
+//                    encryptedKey = it.keyBytes,
+//                    derivationSalt = it.passSalt,
+//                )
+//            },
+//            rootNodeRef = DBChunkRef(
+//                keyId = byteArrayToUUID(header.rootNode.keyId),
+//                chunkId = byteArrayToUUID(header.rootNode.chunkId),
+//                header = header.rootNode.header,
+//            )
+//        )
     }
 
     fun unpackChunk(

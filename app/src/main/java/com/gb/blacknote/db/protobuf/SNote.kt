@@ -8,7 +8,7 @@ import kotlinx.serialization.protobuf.ProtoNumber
 @Serializable
 class SNote(
     @ProtoNumber(1)
-    val title: String = "",
+    val title: String? = null,
 
     @ProtoNumber(2)
     val comment: String? = null,

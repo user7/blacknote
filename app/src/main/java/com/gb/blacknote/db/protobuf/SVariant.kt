@@ -11,11 +11,11 @@ import kotlinx.serialization.protobuf.ProtoNumber
 @Serializable
 class SVariant(
     @ProtoNumber(1)
-    val uuid: SUUID,
+    val uuid: ByteArray,
 
     @ProtoNumber(2)
-    val folder: SFolder?,
+    val folder: SFolder? = null,
 
     @ProtoNumber(3)
-    val note: SNote?,
+    val note: SNote? = null,
 )
