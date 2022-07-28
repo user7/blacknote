@@ -5,5 +5,5 @@ import java.util.*
 class DBChunkRef(
     val chunkId: UUID,
     val keyId: UUID,
-    val header: ByteArray,
+    val iv: ByteArray,
 )

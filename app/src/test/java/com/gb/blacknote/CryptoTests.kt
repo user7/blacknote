@@ -1,17 +1,13 @@
 package com.gb.blacknote
 
 import com.gb.blacknote.db.protobuf.SNote
-import com.gb.blacknote.db.protobuf.SVariant
+import com.gb.blacknote.db.protobuf.SChunk
+import com.gb.blacknote.db.protobuf.StorageEncoder
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromByteArray
-import kotlinx.serialization.encodeToByteArray
-import kotlinx.serialization.protobuf.ProtoBuf
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
-import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import kotlin.random.Random
 import kotlin.test.assertContentEquals
@@ -44,65 +40,26 @@ class CryptoTests {
 
     @Test
     fun testChunkRoundtrip() {
-        val iv = bin("01 34 29 67  A7 F5 2D CE  B8 21 83 57  49 A7 D4 66")
-        val key = unpackKey(bin("01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16"))
-        val obj = SVariant(
-            uuid = bin("00 1D"),
+        val random16 = bin("01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16")
+        val iv = random16
+        val key = StorageEncoder.unpackKey(random16)
+        val chunk = SChunk(
+            uuid = bin("1D 2E"),
             note = SNote(
                 title = "a note",
                 comment = "extended comment"
             ),
         )
-        val encoded = chunkEncode(
-            obj = obj,
-            key = key,
-            iv = iv,
-        )
-        val decoded = chunkDecode(encoded, key, iv)
-        assertThat(decoded).isEqualToComparingFieldByFieldRecursively(obj)
+        val keyData = StorageEncoder.KeyData(key, iv)
+        val encoded = StorageEncoder.encodeChunk(chunk = chunk, keyData = keyData)
+        val decoded = StorageEncoder.decodeChunk(ciphertext = encoded, keyData = keyData)
+        assertThat(decoded).isEqualToComparingFieldByFieldRecursively(chunk)
     }
-
-    private fun chunkEncode(
-        obj: SVariant,
-        key: SecretKey,
-        iv: ByteArray,
-    ): ByteArray {
-        return encrypt(ProtoBuf.encodeToByteArray(obj), key, iv)
-    }
-
-    private fun chunkDecode(
-        ciphertext: ByteArray,
-        key: SecretKey,
-        iv: ByteArray,
-    ): SVariant {
-        val data = decrypt(ciphertext, key, iv)
-        return unpackValue<SVariant>(data)
-    }
-
-    private inline fun <reified T> unpackValue(bytes: ByteArray): T =
-        ProtoBuf.decodeFromByteArray<T>(bytes)
 
     private fun hex(bytes: ByteArray): String =
         bytes.joinToString(" ") { "%02X".format(it) }
 
-    private fun checkThrow(b: Boolean, msg: () -> String) {
-        if (!b)
-            throw IllegalArgumentException(msg())
-    }
-
     private fun bin(hex: String) =
         hex.replace(" ", "").chunked(2)
             .map { it.toInt(16).toByte() }.toByteArray()
-
-    private fun getCipher(mode: Int, key: SecretKey, iv: ByteArray): Cipher {
-        val cipher = Cipher.getInstance("AES/GCM/NoPadding")!!
-        cipher.init(mode, key, GCMParameterSpec(128, iv))
-        return cipher
-    }
-
-    private fun encrypt(data: ByteArray, key: SecretKey, iv: ByteArray): ByteArray =
-        getCipher(Cipher.ENCRYPT_MODE, key, iv).doFinal(data)
-
-    private fun decrypt(ciphertext: ByteArray, key: SecretKey, iv: ByteArray): ByteArray =
-        getCipher(Cipher.DECRYPT_MODE, key, iv).doFinal(ciphertext)
 }

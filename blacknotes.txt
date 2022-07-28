@@ -242,8 +242,8 @@ keyID:
     notifyAll
         // TODO weak ref, or proper
 
-timestamp.toEpochMilli()
 Instant.ofEpochMilli()
+timestamp.toEpochMilli()
 
 check hashset example .hashCode
 
@@ -256,6 +256,8 @@ crypto
     cipher.init(Cipher.ENCRYPT_MODE, key)
     val ciphertext: ByteArray = cipher.doFinal(plaintext)
     val iv: ByteArray = cipher.iv
+
+    // Security.getProviders() method.
     
 разобраться в SerializationStrategy / DeserializationStrategy
     third party class through extending KSerializer
@@ -268,3 +270,4 @@ crypto
     
 OptIn на весь файл
     @file:OptIn(ExperimentalSerializationApi::class)
+

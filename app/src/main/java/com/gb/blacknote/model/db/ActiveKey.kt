@@ -2,6 +2,6 @@ package com.gb.blacknote.model.db
 
 import javax.crypto.SecretKey
 
-class KeyUnlocked(
+class ActiveKey(
     val key: SecretKey,
 )

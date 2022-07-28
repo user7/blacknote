@@ -4,9 +4,8 @@ import androidx.lifecycle.LiveData
 import com.gb.blacknote.model.db.DBChunkRef
 import com.gb.blacknote.model.db.DBHeader
 import com.gb.blacknote.model.db.DBNode
-import com.gb.blacknote.model.db.KeyUnlocked
+import com.gb.blacknote.model.db.ActiveKey
 import java.util.*
-import javax.crypto.SecretKey
 
 class Model {
 
@@ -22,7 +21,7 @@ class Model {
         fun getHeader(): DBHeader?
         fun addHeader(header: DBHeader)
         fun getItem(id: UUID): DBNode
-        fun loadItem(ref: DBChunkRef, key: KeyUnlocked)
+        fun loadItem(ref: DBChunkRef, activeKey: ActiveKey)
         fun addItem(id: UUID, node: DBNode)
         fun observe(observer: DatabaseObserver)
     }

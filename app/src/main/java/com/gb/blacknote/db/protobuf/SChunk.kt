@@ -9,7 +9,7 @@ import kotlinx.serialization.protobuf.ProtoNumber
 
 @ExperimentalSerializationApi
 @Serializable
-class SVariant(
+class SChunk(
     @ProtoNumber(1)
     val uuid: ByteArray,
 

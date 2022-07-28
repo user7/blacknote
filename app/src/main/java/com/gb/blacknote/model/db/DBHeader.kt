@@ -6,10 +6,10 @@ import java.util.UUID
 class DBHeader(
     val id: UUID,
     val timestamp: Instant,
-    val lockedKeys: List<KeyLocked>,
+    val encryptedKeyInfos: List<KeyInfo>,
     rootNodeRef: DBChunkRef,
 )
 {
-    val unlockedKeys: Map<UUID, KeyUnlocked> = mapOf()
+    val activeKeys: MutableMap<UUID, ActiveKey> = hashMapOf()
     var root: DBNode = DBNodePending(rootNodeRef)
 }
