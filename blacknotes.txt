@@ -1,7 +1,19 @@
 plan
     + add koin
+    ProtobufEncoder
+        ~ finish encode/decode funs
+        Koin inject encoder
+        // TODO: test ALGO same as AES in decodeKey / encodeKey
+        encode/decode -> pack/unpack
+        ser/deser -> encode/decodeKey
+    
+    check ByteArray? is supported by protobuf
+    
+    viemodel setup coro calls
+
     + add viewModel
         add some kind of list adapter, empty
+
     inject viewModel into mainFragment
     add idatabase
     create fakedatabase class
@@ -19,6 +31,17 @@ plan
     todo
         check protobuf loading extra field (forward compatibility)
         make custom serialization
+
+    introduce protobuf base + test schema is good in time
+        enable reflection only for tests (? doesnt koin already uses it)
+        create test which:
+            tests current proto against stored .proto text
+            CI test that tests older protos are kept
+            CI test that tests protos are compatible
+
+    proto add 
+        @ProtoNumber(3)
+        val ancestorUUID: ByteArray
 
 data model
     1. Storage
@@ -271,3 +294,9 @@ crypto
 OptIn на весь файл
     @file:OptIn(ExperimentalSerializationApi::class)
 
+cleanup
+    move unpack* to StorageEncoder 
+    make it storagehelper
+   
+get jetpack, compare to current stuff
+    https://github.com/android/nowinandroid

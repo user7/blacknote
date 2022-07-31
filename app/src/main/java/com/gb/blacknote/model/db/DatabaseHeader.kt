@@ -3,13 +3,13 @@ package com.gb.blacknote.model.db
 import java.time.Instant
 import java.util.UUID
 
-class DBHeader(
-    val id: UUID,
+class DatabaseHeader(
+    val headerId: UUID,
     val timestamp: Instant,
-    val encryptedKeyInfos: List<KeyInfo>,
-    rootNodeRef: DBChunkRef,
+    val storedKeys: List<StoredKey>,
+    rootNodeRef: ChunkRef,
 )
 {
     val activeKeys: MutableMap<UUID, ActiveKey> = hashMapOf()
-    var root: DBNode = DBNodePending(rootNodeRef)
+    var root: NodeHolder = NodeHolder(rootNodeRef)
 }

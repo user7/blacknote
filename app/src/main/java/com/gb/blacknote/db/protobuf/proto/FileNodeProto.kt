@@ -1,4 +1,4 @@
-package com.gb.blacknote.db.protobuf
+package com.gb.blacknote.db.protobuf.proto
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -6,10 +6,10 @@ import kotlinx.serialization.protobuf.ProtoNumber
 
 @ExperimentalSerializationApi
 @Serializable
-class SDBHeader(
+class FileNodeProto(
     @ProtoNumber(1)
-    val keys: List<SKey> = listOf(),
+    val name: String?,
 
     @ProtoNumber(2)
-    val rootNode: SChunkRef,
+    val contents: ByteArray?,
 )

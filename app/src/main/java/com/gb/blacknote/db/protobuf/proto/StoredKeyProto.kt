@@ -1,10 +1,8 @@
-package com.gb.blacknote.db.protobuf
+package com.gb.blacknote.db.protobuf.proto
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.protobuf.ProtoIntegerType
 import kotlinx.serialization.protobuf.ProtoNumber
-import kotlinx.serialization.protobuf.ProtoType
 
 // when user gives pass:
 // key1 = PBKDF2(pass, .passHardeningSalt, .passHardeningIterations)
@@ -14,7 +12,7 @@ import kotlinx.serialization.protobuf.ProtoType
 
 @ExperimentalSerializationApi
 @Serializable
-class SKey(
+class StoredKeyProto(
     @ProtoNumber(1)
     val passSalt: ByteArray,
 

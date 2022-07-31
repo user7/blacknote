@@ -1,4 +1,4 @@
-package com.gb.blacknote.db.protobuf
+package com.gb.blacknote.db.protobuf.proto
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -6,10 +6,10 @@ import kotlinx.serialization.protobuf.ProtoNumber
 
 @ExperimentalSerializationApi
 @Serializable
-class SFolder(
+class DBHeaderProto(
     @ProtoNumber(1)
-    val name: String = "",
+    val keys: List<StoredKeyProto> = listOf(),
 
     @ProtoNumber(2)
-    val items: List<SChunkRef> = listOf(),
+    val rootNode: ChunkRefProto,
 )

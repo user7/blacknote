@@ -1,28 +1,28 @@
 package com.gb.blacknote.model
 
 import androidx.lifecycle.LiveData
-import com.gb.blacknote.model.db.DBChunkRef
-import com.gb.blacknote.model.db.DBHeader
-import com.gb.blacknote.model.db.DBNode
-import com.gb.blacknote.model.db.ActiveKey
+import com.gb.blacknote.model.db.DatabaseHeader
+import com.gb.blacknote.model.db.nodes.Node
 import java.util.*
 
 class Model {
 
     interface DatabaseObserver {
-        fun onHeaderLoaded(header: DBHeader?)
-        fun onNodeLoaded(node: DBNode)
+        fun onHeaderLoaded(header: DatabaseHeader?)
+        fun onNodeLoaded(node: Node)
         fun onNodeLoadingFailed(id: UUID)
     }
 
     interface Database {
-        fun load()
-        fun save()
-        fun getHeader(): DBHeader?
-        fun addHeader(header: DBHeader)
-        fun getItem(id: UUID): DBNode
-        fun loadItem(ref: DBChunkRef, activeKey: ActiveKey)
-        fun addItem(id: UUID, node: DBNode)
+
+        fun getHeader(): DatabaseHeader?              // immediately get header or null
+        fun loadHeader()                        // load latest header, notify observer
+        fun addHeader(header: DatabaseHeader)         // add new header and save it
+
+        fun getNode(id: UUID): Node           // get item, may be DBNodePending
+        fun loadNode(id: UUID)                  // load node, notify observer
+        fun addItem(id: UUID, node: Node)     // add new item and save it to db
+
         fun observe(observer: DatabaseObserver)
     }
 
@@ -36,3 +36,5 @@ class Model {
         fun dbState(): LiveData<DbState>
     }
 }
+
+typealias TimestampEpochMillis = Long

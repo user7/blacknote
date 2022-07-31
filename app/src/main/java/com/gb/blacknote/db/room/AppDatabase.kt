@@ -1,4 +1,4 @@
-package com.gb.blacknote.db.sqlite.room
+package com.gb.blacknote.db.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

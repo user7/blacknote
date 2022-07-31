@@ -2,8 +2,8 @@ package com.gb.blacknote.model.db
 
 import java.util.*
 
-class KeyInfo(
+class StoredKey(
     val keyId: UUID,
     val encryptedKey: ByteArray,
-    val derivationSalt: ByteArray?,
+    val passDerivationSalt: ByteArray,
 )

@@ -1,4 +1,4 @@
-package com.gb.blacknote.db.protobuf
+package com.gb.blacknote.db.protobuf.proto
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -6,7 +6,7 @@ import kotlinx.serialization.protobuf.ProtoNumber
 
 @ExperimentalSerializationApi
 @Serializable
-class SChunkRef(
+class ChunkRefProto(
     @ProtoNumber(1)
     val chunkId: ByteArray, // UUID
 

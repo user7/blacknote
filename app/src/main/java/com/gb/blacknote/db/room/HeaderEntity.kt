@@ -1,4 +1,4 @@
-package com.gb.blacknote.db.sqlite.room
+package com.gb.blacknote.db.room
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -7,7 +7,7 @@ import java.util.*
 
 @Entity(tableName = "headers")
 class HeaderEntity (
-    @PrimaryKey @ColumnInfo(name = "id") val id: UUID,
+    @PrimaryKey @ColumnInfo(name = "id") val headerId: UUID,
     @ColumnInfo(name = "data") val data: ByteArray,
-    @ColumnInfo(name = "timestamp") val epochMillis: Long,
+    @ColumnInfo(name = "epochMs") val epochMs: Long,
 )
