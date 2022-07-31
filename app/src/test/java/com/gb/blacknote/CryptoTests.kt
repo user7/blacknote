@@ -1,12 +1,10 @@
 package com.gb.blacknote
 
 import com.gb.blacknote.db.protobuf.ProtobufEncoder
-import com.gb.blacknote.db.room.ChunkEntity
 import com.gb.blacknote.model.db.nodes.NoteNode
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.util.*
 import kotlin.test.assertContentEquals
 
 @ExperimentalSerializationApi

@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalSerializationApi::class)
+
 package com.gb.blacknote
 
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -171,11 +172,11 @@ class ProtobufTest {
     }
 
     private fun prettyHex(bytes: ByteArray): String {
-        val sb = StringBuilder()
+        val sb = StringBuilder("[")
         val regex = "\\p{Punct}|\\p{Alnum}| ".toRegex()
         for (b in bytes) {
             val char = b.toUInt().toInt().toChar()
-            sb.append(if (sb.isEmpty()) "[" else ", ")
+            sb.append(if (sb.length == 1) "" else ", ")
             sb.append(
                 "%02X%s".format(
                     b.toUByte().toInt(),
@@ -187,7 +188,7 @@ class ProtobufTest {
         return sb.toString()
     }
 
-    fun printBytes(bytes: ByteArray) {
+    private fun printBytes(bytes: ByteArray) {
         println(prettyHex(bytes))
     }
 }
