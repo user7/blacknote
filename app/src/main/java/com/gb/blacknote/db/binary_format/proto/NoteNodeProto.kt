@@ -1,4 +1,4 @@
-package com.gb.blacknote.db.protobuf.proto
+package com.gb.blacknote.db.binary_format.proto
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -6,10 +6,10 @@ import kotlinx.serialization.protobuf.ProtoNumber
 
 @ExperimentalSerializationApi
 @Serializable
-class FolderNodeProto(
+class NoteNodeProto(
     @ProtoNumber(1)
-    val name: String? = null,
+    val title: String? = null,
 
     @ProtoNumber(2)
-    val items: List<ChunkRefProto> = listOf(),
+    val comment: String? = null,
 )

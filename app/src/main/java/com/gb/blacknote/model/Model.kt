@@ -10,7 +10,7 @@ class Model {
     interface DatabaseObserver {
         fun onHeaderLoaded(header: DatabaseHeader?)
         fun onNodeLoaded(node: Node)
-        fun onNodeLoadingFailed(id: UUID)
+        fun onNodeLoadingFailed(nodeId: UUID)
     }
 
     interface Database {

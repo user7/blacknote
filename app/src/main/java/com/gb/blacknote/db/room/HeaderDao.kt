@@ -9,7 +9,7 @@ import java.util.*
 
 @Dao
 interface HeaderDao {
-    @Query(value = "SELECT * FROM headers ORDER BY timestamp DESC LIMIT 1")
+    @Query(value = "SELECT * FROM headers ORDER BY epochMs DESC LIMIT 1")
     fun getLatestHeader(): HeaderEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

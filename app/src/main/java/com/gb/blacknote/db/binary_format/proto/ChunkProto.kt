@@ -1,4 +1,4 @@
-package com.gb.blacknote.db.protobuf.proto
+package com.gb.blacknote.db.binary_format.proto
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable

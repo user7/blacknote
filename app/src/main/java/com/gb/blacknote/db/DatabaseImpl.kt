@@ -4,7 +4,7 @@ package com.gb.blacknote.db
 
 import android.content.Context
 import androidx.room.Room
-import com.gb.blacknote.db.protobuf.ProtobufEncoder
+import com.gb.blacknote.db.binary_format.BinaryFormatEncoder
 import com.gb.blacknote.model.Model
 import com.gb.blacknote.db.room.AppDatabase
 import com.gb.blacknote.model.db.*
@@ -16,21 +16,19 @@ import java.util.UUID
 
 class DatabaseImpl(
     context: Context,
-    private val storageEncoder: ProtobufEncoder,
+    private val encoder: BinaryFormatEncoder,
 ) : Model.Database {
 
     private val db = Room.databaseBuilder(context, AppDatabase::class.java, "main.db").build()
     private var header: DatabaseHeader? = null
     private val observers: ArrayList<Model.DatabaseObserver> = arrayListOf()
-    private val itemsToSave: HashSet<Node> = hashSetOf()
-    private val itemsToLoad: HashSet<Node> = hashSetOf()
-    private val itemsLoaded: HashSet<Node> = hashSetOf()
+
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
     override fun loadHeader() {
-        val encodedHeader = db.headerDao().getLatestHeader()
-        header = encodedHeader?.let { storageEncoder.decodeHeader(it) }
+        val headerEntity = db.headerDao().getLatestHeader()
+        header = headerEntity?.let { encoder.decodeHeader(it) }
         notifyAll { it.onHeaderLoaded(header) }
     }
 

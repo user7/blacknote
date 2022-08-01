@@ -2,16 +2,15 @@
 
 package com.gb.blacknote
 
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromByteArray
-import kotlinx.serialization.encodeToByteArray
+import kotlinx.serialization.*
 import kotlinx.serialization.protobuf.ProtoBuf
 import kotlinx.serialization.protobuf.ProtoNumber
+import kotlinx.serialization.protobuf.schema.ProtoBufSchemaGenerator
 import org.junit.Test
 
 import org.junit.Assert.*
 import java.lang.Exception
+import java.lang.IllegalArgumentException
 import kotlin.test.assertContentEquals
 
 @Serializable
@@ -67,6 +66,12 @@ class TestUUID(
     var bytes: ByteArray,
 )
 
+@Serializable
+class TestNullableByteArray(
+    @ProtoNumber(1)
+    var bytes: ByteArray?,
+)
+
 class ProtobufTest {
 
     @Test
@@ -115,12 +120,17 @@ class ProtobufTest {
 
     @Test
     fun testOverlap() {
-//        val descriptors = listOf(TestOverlap.serializer().descriptor)
-//        val schemas = ProtoBufSchemaGenerator.generateSchemaText(descriptors)
-//        println("schema:\n$schemas")
-
         // broken schema works, need to detect compile time
         roundtrip(TestOverlap(1, 2), TestOverlap(null, 2))
+
+        assertThrows(
+            "generateSchemaText throws on bad schema",
+            IllegalArgumentException::class.java
+        ) {
+            val descriptors = listOf(TestOverlap.serializer().descriptor)
+            val schemas = ProtoBufSchemaGenerator.generateSchemaText(descriptors)
+            println("schema:\n$schemas")
+        }
     }
 
     @Test
@@ -149,6 +159,15 @@ class ProtobufTest {
         val bytes = ProtoBuf.encodeToByteArray(uuid)
         val uuid2 = ProtoBuf.decodeFromByteArray<TestUUID>(bytes)
         assertTrue(uuid2.bytes.contentEquals(uuid.bytes))
+    }
+
+    @Test
+    fun testNullableByteArray() {
+        assertThrows(
+            "protobuf should refuse ByteArray? field",
+            SerializationException::class.java
+        )
+        { roundtrip(TestNullableByteArray(null)) }
     }
 
 // === helpers

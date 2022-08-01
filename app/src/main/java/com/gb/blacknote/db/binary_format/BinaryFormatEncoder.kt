@@ -1,8 +1,8 @@
 @file:OptIn(ExperimentalSerializationApi::class)
 
-package com.gb.blacknote.db.protobuf
+package com.gb.blacknote.db.binary_format
 
-import com.gb.blacknote.db.protobuf.proto.*
+import com.gb.blacknote.db.binary_format.proto.*
 import com.gb.blacknote.db.room.ChunkEntity
 import com.gb.blacknote.db.room.HeaderEntity
 import com.gb.blacknote.emptyNull
@@ -26,7 +26,7 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 
-class ProtobufEncoder {
+class BinaryFormatEncoder {
 
     class KeyIv(
         val key: SecretKey,
@@ -40,7 +40,9 @@ class ProtobufEncoder {
 
     private val rng = SecureRandom()
 
-    fun generateKey(): SecretKey = KeyGenerator.getInstance(KEY_ALGO).apply { init(rng) }.generateKey()
+    fun generateKey(): SecretKey =
+        KeyGenerator.getInstance(KEY_ALGO).apply { init(rng) }.generateKey()
+
     fun generateIv(): ByteArray = ByteArray(16).apply { rng.nextBytes(this) }
     fun generateUUID(): UUID = UUID.randomUUID()
     fun decodeKey(bytes: ByteArray): SecretKey = SecretKeySpec(bytes, KEY_ALGO)
@@ -48,15 +50,18 @@ class ProtobufEncoder {
     private fun encodeKeyInfo(storedKey: StoredKey) = StoredKeyProto(
         keyId = encodeUUID(storedKey.keyId),
         keyBytes = storedKey.encryptedKey,
-        passSalt = storedKey.passDerivationSalt ?: ByteArray(0),
+        passSalt = storedKey.passDerivationSalt,
     )
 
+    fun decodeTimestamp(epochMs: Long): Instant = Instant.ofEpochMilli(epochMs)
+    fun encodeTimestamp(timestamp: Instant): Long = timestamp.toEpochMilli()
+
     fun decodeHeader(headerEntity: HeaderEntity): DatabaseHeader {
-        val headerProto = deserializeObject<DBHeaderProto>(headerEntity.data, null)
+        val headerProto = deserializeObject<DatabaseHeaderProto>(headerEntity.data, null)
         val keys = headerProto.keys.map { decodeStoredKey(it) }
         val header = DatabaseHeader(
             headerId = headerEntity.headerId,
-            timestamp = Instant.ofEpochMilli(headerEntity.epochMs),
+            timestamp = decodeTimestamp(headerEntity.epochMs),
             storedKeys = keys,
             rootNodeRef = decodeChunkRef(headerProto.rootNode),
         )
@@ -75,12 +80,12 @@ class ProtobufEncoder {
         return HeaderEntity(
             headerId = header.headerId,
             data = serializeObject(
-                DBHeaderProto(
+                DatabaseHeaderProto(
                     keys = keys,
                     rootNode = rootNode,
                 )
             ),
-            epochMs = header.timestamp.toEpochMilli()
+            epochMs = encodeTimestamp(header.timestamp)
         )
     }
 
@@ -122,7 +127,8 @@ class ProtobufEncoder {
                 is FolderNode -> ChunkProto(nodeId = id, folder = encodeFolderNode(node))
                 is FileNode -> ChunkProto(nodeId = id, file = encodeFileNode(node))
                 is NoteNode -> ChunkProto(nodeId = id, note = encodeNoteNode(node))
-                is UnsupportedNode -> throw IllegalArgumentException("node of unsupported type can not be encoded")
+                is UnsupportedNode ->
+                    throw IllegalArgumentException("node of unsupported type can not be encoded")
             }
         return ChunkEntity(chunkId = chunkId, data = serializeObject(proto, keyIv))
     }
