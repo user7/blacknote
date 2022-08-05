@@ -5,5 +5,6 @@ import java.util.*
 class StoredKey(
     val keyId: UUID,
     val encryptedKey: ByteArray,
-    val passDerivationSalt: ByteArray,
+    val passSalt: ByteArray,
+    val keyHash: ByteArray,
 )

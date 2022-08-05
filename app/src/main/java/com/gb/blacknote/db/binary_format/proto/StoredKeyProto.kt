@@ -21,4 +21,7 @@ class StoredKeyProto(
 
     @ProtoNumber(3)
     val keyBytes: ByteArray,
+
+    @ProtoNumber(4)
+    val keyHash: ByteArray,
 )

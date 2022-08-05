@@ -47,12 +47,6 @@ class BinaryFormatEncoder {
     fun generateUUID(): UUID = UUID.randomUUID()
     fun decodeKey(bytes: ByteArray): SecretKey = SecretKeySpec(bytes, KEY_ALGO)
 
-    private fun encodeKeyInfo(storedKey: StoredKey) = StoredKeyProto(
-        keyId = encodeUUID(storedKey.keyId),
-        keyBytes = storedKey.encryptedKey,
-        passSalt = storedKey.passDerivationSalt,
-    )
-
     fun decodeTimestamp(epochMs: Long): Instant = Instant.ofEpochMilli(epochMs)
     fun encodeTimestamp(timestamp: Instant): Long = timestamp.toEpochMilli()
 
@@ -66,7 +60,7 @@ class BinaryFormatEncoder {
             rootNodeRef = decodeChunkRef(headerProto.rootNode),
         )
         header.storedKeys.forEach {
-            if (it.passDerivationSalt.isEmpty()) {
+            if (it.passSalt.isEmpty()) {
                 header.activeKeys[it.keyId] =
                     ActiveKey(decodeKey(it.encryptedKey))
             }
@@ -75,7 +69,7 @@ class BinaryFormatEncoder {
     }
 
     fun encodeHeader(header: DatabaseHeader): HeaderEntity {
-        val keys = header.storedKeys.map { encodeKeyInfo(it) }
+        val keys = header.storedKeys.map { encodeStoredKey(it) }
         val rootNode = encodeChunkRef(header.root.chunkRef)
         return HeaderEntity(
             headerId = header.headerId,
@@ -204,13 +198,15 @@ class BinaryFormatEncoder {
     private fun decodeStoredKey(proto: StoredKeyProto) = StoredKey(
         keyId = decodeUUID(proto.keyId),
         encryptedKey = proto.keyBytes,
-        passDerivationSalt = proto.passSalt,
+        passSalt = proto.passSalt,
+        keyHash = proto.keyHash,
     )
 
     private fun encodeStoredKey(storedKey: StoredKey) = StoredKeyProto(
         keyId = encodeUUID(storedKey.keyId),
         keyBytes = storedKey.encryptedKey,
-        passSalt = storedKey.passDerivationSalt,
+        passSalt = storedKey.passSalt,
+        keyHash = storedKey.keyHash,
     )
 
     private fun decodeUUID(bytes: ByteArray): UUID =

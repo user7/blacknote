@@ -1,13 +1,16 @@
 plan
     + add koin
-    ProtobufEncoder
+    + ProtobufEncoder
         ~ finish encode/decode funs
-        Koin inject encoder
+        + Koin inject encoder
         // TODO: test ALGO same as AES in decodeKey / encodeKey
-        encode/decode -> pack/unpack
-        ser/deser -> encode/decodeKey
+        x encode/decode -> pack/unpack
+        x ser/deser -> encode/decode
     
-    check ByteArray? is supported by protobuf
+    + key hash field in KeyProto and StoredKeyProto
+    x check ByteArray? is supported by protobuf
+    
+    salt passphrase -> decrypt key -> add active key
     
     viemodel setup coro calls
 
