@@ -2,6 +2,7 @@
 
 package com.gb.blacknote.db.binary_format
 
+import com.gb.blacknote.model.db.KeyIv
 import com.gb.blacknote.db.binary_format.proto.*
 import com.gb.blacknote.db.room.ChunkEntity
 import com.gb.blacknote.db.room.HeaderEntity
@@ -13,7 +14,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import kotlinx.serialization.protobuf.ProtoBuf
-import java.lang.IllegalArgumentException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.security.SecureRandom
@@ -25,13 +25,7 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-
 class BinaryFormatEncoder {
-
-    class KeyIv(
-        val key: SecretKey,
-        val iv: ByteArray,
-    )
 
     companion object {
         const val ALGO = "AES/GCM/NoPadding"
@@ -70,7 +64,7 @@ class BinaryFormatEncoder {
 
     fun encodeHeader(header: DatabaseHeader): HeaderEntity {
         val keys = header.storedKeys.map { encodeStoredKey(it) }
-        val rootNode = encodeChunkRef(header.root.chunkRef)
+        val rootNode = encodeChunkRef(header.rootNodeRef)
         return HeaderEntity(
             headerId = header.headerId,
             data = serializeObject(
@@ -121,7 +115,7 @@ class BinaryFormatEncoder {
                 is FolderNode -> ChunkProto(nodeId = id, folder = encodeFolderNode(node))
                 is FileNode -> ChunkProto(nodeId = id, file = encodeFileNode(node))
                 is NoteNode -> ChunkProto(nodeId = id, note = encodeNoteNode(node))
-                is UnsupportedNode ->
+                is BadNode ->
                     throw IllegalArgumentException("node of unsupported type can not be encoded")
             }
         return ChunkEntity(chunkId = chunkId, data = serializeObject(proto, keyIv))
@@ -130,7 +124,7 @@ class BinaryFormatEncoder {
     private fun encodeFolderNode(folder: FolderNode) =
         FolderNodeProto(
             name = emptyNull(folder.name),
-            items = folder.items.map { encodeChunkRef(it.chunkRef) },
+            items = folder.items.map { encodeChunkRef(it) },
         )
 
     private fun encodeNoteNode(note: NoteNode) =
@@ -151,13 +145,11 @@ class BinaryFormatEncoder {
     ): Node {
         val proto: ChunkProto = deserializeObject(chunkEntity.data, keyIv)
         val nodeId = decodeUUID(proto.nodeId)
-        val node: Node =
-            proto.folder?.let { decodeFolderNode(nodeId, it) } ?: proto.note?.let {
-                decodeNoteNode(
-                    nodeId,
-                    it
-                )
-            } ?: proto.file?.let { decodeFileNode(nodeId, it) } ?: UnsupportedNode(nodeId)
+        val node: Node = null
+            ?: proto.folder?.let { decodeFolderNode(nodeId, it) }
+            ?: proto.note?.let { decodeNoteNode(nodeId, it) }
+            ?: proto.file?.let { decodeFileNode(nodeId, it) }
+            ?: BadNode(nodeId, "Unknown node type, update app maybe?")
         return node
     }
 
@@ -165,7 +157,7 @@ class BinaryFormatEncoder {
         FolderNode(
             nodeId = nodeId,
             name = nullEmpty(proto.name),
-            items = ArrayList(proto.items.map { NodeHolder(decodeChunkRef(it)) }),
+            items = ArrayList(proto.items.map { decodeChunkRef(it) }),
         )
 
     private fun decodeNoteNode(nodeId: UUID, proto: NoteNodeProto) =

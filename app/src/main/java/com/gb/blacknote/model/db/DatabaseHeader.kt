@@ -7,9 +7,8 @@ class DatabaseHeader(
     val headerId: UUID,
     val timestamp: Instant,
     val storedKeys: List<StoredKey>,
-    rootNodeRef: ChunkRef,
+    var rootNodeRef: ChunkRef,
 )
 {
     val activeKeys: MutableMap<UUID, ActiveKey> = hashMapOf()
-    var root: NodeHolder = NodeHolder(rootNodeRef)
 }

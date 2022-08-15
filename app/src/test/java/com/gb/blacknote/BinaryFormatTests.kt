@@ -33,7 +33,7 @@ class BinaryFormatTests {
             headerId = headerId,
             timestamp = encoder.decodeTimestamp(123),
             storedKeys = arrayListOf(),
-            rootNodeRef = ChunkRef(chunkId = rootChunkId, iv = rootIv, keyId = keyId)
+            zz = ChunkRef(chunkId = rootChunkId, iv = rootIv, keyId = keyId)
         )
         val encoded = encoder.encodeHeader(header)
         val decoded = encoder.decodeHeader(encoded)

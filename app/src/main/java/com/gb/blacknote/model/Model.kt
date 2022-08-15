@@ -9,18 +9,24 @@ class Model {
 
     interface DatabaseObserver {
         fun onHeaderLoaded(header: DatabaseHeader?)
+        fun onHeaderLoadingFailed(headerId: UUID, error: String)
+        fun onHeaderAddFailed(headerId: UUID, error: String)
+
         fun onNodeLoaded(node: Node)
-        fun onNodeLoadingFailed(nodeId: UUID)
+        fun onNodeLoadingFailed(chunkId: UUID, error: String)
+        fun onNodeAddFailed(chunkId: UUID, error: String)
+
+        fun onUnexpectedError(error: String)
     }
 
     interface Database {
 
-        fun getHeader(): DatabaseHeader?              // immediately get header or null
+        fun getHeader(): DatabaseHeader?        // immediately get header or null
         fun loadHeader()                        // load latest header, notify observer
-        fun addHeader(header: DatabaseHeader)         // add new header and save it
+        fun addHeader(header: DatabaseHeader)   // add new header and save it
 
-        fun getNode(id: UUID): Node           // get item, may be DBNodePending
-        fun loadNode(id: UUID)                  // load node, notify observer
+        fun getNode(id: UUID): Node?           // get item, may be DBNodePending
+        fun loadNode(id: UUID)                // load node, notify observer
         fun addItem(id: UUID, node: Node)     // add new item and save it to db
 
         fun observe(observer: DatabaseObserver)
