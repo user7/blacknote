@@ -51,12 +51,12 @@ data class TestComposite(
 
 class TestNested {
     @Serializable
-    data class TestSI(
+    data class NestedSerializable(
         @ProtoNumber(1)
-        val s: String = "qq",
+        val s: String? = null,
 
         @ProtoNumber(2)
-        val i: Int = 11,
+        val i: Int? = null,
     )
 }
 
@@ -135,7 +135,7 @@ class ProtobufTest {
 
     @Test
     fun testNestedRoundtrip() {
-        roundtrip(TestNested.TestSI("qwe", 12))
+        roundtrip(TestNested.NestedSerializable("qwe", 12))
     }
 
     @Test
